@@ -112,8 +112,8 @@ export default ({
       } = this.props;
 
       const style = [
+        {alignSelf: 'flex-start'},
         panDecoratorStyle,
-        {alignSelf: 'flex-start'}
       ];
 
       return (

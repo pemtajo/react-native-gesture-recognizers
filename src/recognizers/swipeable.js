@@ -168,8 +168,8 @@ const swipeable = ({
       } = this.props;
 
       const style = [
-        swipeDecoratorStyle,
-        {alignSelf: 'flex-start'}
+        {alignSelf: 'flex-start'},
+        swipeDecoratorStyle
       ];
 
       const state = setGestureState ? this.state : null;
