@@ -18,6 +18,35 @@ const propTypes = {
   swipeDecoratorStyle: PropTypes.any
 };
 
+// TODO: that's a rip-off from onPanResponderMove, we should
+// extract a generic approach
+const shouldRespondToGesture = (evt, gestureState) => {
+  const { dx, dy, vx, vy } = gestureState;
+
+  const validHorizontal = checkHorizontal && isValidSwipe(
+    vx, dy, initialVelocityThreshold, verticalThreshold
+  );
+  const validVertical = checkVertical && isValidSwipe(
+    vy, dx, initialVelocityThreshold, horizontalThreshold
+  );
+
+  if (validHorizontal) {
+    if ((horizontal || left) && dx < 0) {
+      return true;
+    } else if ((horizontal || right) && dx > 0) {
+      return true;
+    }
+  } else if (validVertical) {
+    if ((vertical || up) && dy < 0) {
+      return true;
+    } else if ((vertical || down) && dy > 0) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 const swipeable = ({
   horizontal = false,
   vertical = false,
@@ -59,12 +88,8 @@ const swipeable = ({
     componentWillMount() {
       this.panResponder = PanResponder.create({
 
-        onStartShouldSetPanResponder: (evt) => {
-          return evt.nativeEvent.touches.length === 1;
-        },
-
-        onMoveShouldSetPanResponder: (evt) => {
-          return evt.nativeEvent.touches.length === 1;
+        onMoveShouldSetPanResponder: (evt, gestureState) => {
+          return shouldRespondToGesture(evt, gestureState);
         },
 
         onPanResponderMove: (evt, gestureState) => {
